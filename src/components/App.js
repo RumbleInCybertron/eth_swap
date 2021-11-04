@@ -26,8 +26,21 @@ class App extends Component {
     if (tokenData) {
       const token = new web3.eth.Contract(Token.abi, tokenData.address);
       this.setState({ token });
+      let tokenBalance = await token.methods
+        .balanceOf(this.state.account)
+        .call();
+      this.setState({ tokenBalance: tokenBalance.toString() });
     } else {
       window.alert("Token contract not deployed to detected network");
+    }
+
+    // Load EthSwap
+    const ethSwapData = EthSwap.networks[networkId];
+    if (ethSwapData) {
+      const ethSwap = new web3.eth.Contract(EthSwap.abi, ethSwapData.address);
+      this.setState({ ethSwap });
+    } else {
+      window.alert("EthSwap contract not deployed to detected network");
     }
   }
 
@@ -49,7 +62,9 @@ class App extends Component {
     this.state = {
       account: "",
       token: {},
+      ethSwap: {},
       ethBalance: "0",
+      tokenBalance: "0",
     };
   }
 
